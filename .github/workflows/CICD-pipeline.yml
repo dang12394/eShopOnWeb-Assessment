@@ -35,7 +35,7 @@ jobs:
         New-Item -ItemType Directory -Force -Path $publishPath | Out-Null
         dotnet publish ./src/Web/Web.csproj -c Release -o "$publishPath"
         cd "$publishPath"
-        Compress-Archive -Path * -DestinationPath C:\tools\app.zip
+        Compress-Archive -Path * -DestinationPath C:\tools\app.zip -Force
     #Upload app.zip to staging and wait to deploy
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
