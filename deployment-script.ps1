@@ -1,6 +1,6 @@
 param (
     [string]$ZipPath = "C:\tools\app.zip",
-    [string]$DeployPath = "D:\Eurofins-Assessment\Demo-app\wwwroot\eShopOnWeb",
+    [string]$DeployPath = "C:\tools\eShop",
     [string]$SiteName = "eShopOnWeb"
 )
 
