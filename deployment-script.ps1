@@ -34,27 +34,37 @@ $webConfigPath = Join-Path $deployPath "web.config"
 if (Test-Path $webConfigPath) {
     [xml]$webConfig = Get-Content $webConfigPath
 
-    # Get the aspNetCore element
-    $aspNetCore = $webConfig.configuration.'system.webServer'.aspNetCore
+    $nsmgr = New-Object System.Xml.XmlNamespaceManager($webConfig.NameTable)
+    $nsmgr.AddNamespace("ns", $webConfig.DocumentElement.NamespaceURI)
 
-    if (-not $aspNetCore.environmentVariables) {
-        $envVars = $webConfig.CreateElement("environmentVariables")
+    
+    $aspNetCore = $webConfig.SelectSingleNode("//ns:aspNetCore", $nsmgr)
+
+    if (-not $aspNetCore) {
+        Write-Error "❌ aspNetCore element not found in web.config."
+        return
+    }
+
+    
+    $envVars = $aspNetCore.SelectSingleNode("ns:environmentVariables", $nsmgr)
+    if (-not $envVars) {
+        $envVars = $webConfig.CreateElement("environmentVariables", $webConfig.DocumentElement.NamespaceURI)
         $aspNetCore.AppendChild($envVars) | Out-Null
     }
 
-    # Check if the env var already exists
-    $existing = $aspNetCore.environmentVariables.environmentVariable |
-        Where-Object { $_.name -eq "ASPNETCORE_ENVIRONMENT" }
-
+    
+    $existing = $envVars.SelectSingleNode("ns:environmentVariable[@name='ASPNETCORE_ENVIRONMENT']", $nsmgr)
     if (-not $existing) {
-        $envVar = $webConfig.CreateElement("environmentVariable")
+        $envVar = $webConfig.CreateElement("environmentVariable", $webConfig.DocumentElement.NamespaceURI)
         $envVar.SetAttribute("name", "ASPNETCORE_ENVIRONMENT")
         $envVar.SetAttribute("value", "Development")
-        $aspNetCore.environmentVariables.AppendChild($envVar) | Out-Null
+        $envVars.AppendChild($envVar) | Out-Null
+        Write-Host "✅ Set ASPNETCORE_ENVIRONMENT=Development in web.config"
+    } else {
+        Write-Host "ℹ️ ASPNETCORE_ENVIRONMENT already exists in web.config"
     }
 
     $webConfig.Save($webConfigPath)
-    Write-Host "✅ Set ASPNETCORE_ENVIRONMENT=Development in web.config"
 } else {
     Write-Warning "⚠️ web.config not found at $webConfigPath"
 }
