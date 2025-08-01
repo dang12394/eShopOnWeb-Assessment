@@ -1,0 +1,48 @@
+name: Build and deploy the app
+
+on: [push, workflow_dispatch]
+
+# env:
+#   RESOURCE-GROUP: DevOps-group
+#   LOCATION: southeastasia
+#   TEMPLATE-FILE: infra/webapp.bicep
+#   SUBSCRIPTION-ID: 398eae33-1529-42af-950d-8feca8144acf
+#   WEBAPP-NAME: eshoponweb-webapp-dang12394
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v4
+    #Install .NET on runner
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        dotnet-quality: 'preview'
+
+    #Basic .NET step
+    - name: Build with dotnet
+      run: |
+        Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+        dotnet build ./eShopOnWeb.sln --configuration Release
+    - name: Test with dotnet
+      run: dotnet test ./eShopOnWeb.sln --configuration Release
+    #Publish app.zip package
+    - name: dotnet publish
+      run: |
+        $publishPath = "C:\tools\myapp"
+        New-Item -ItemType Directory -Force -Path $publishPath | Out-Null
+        dotnet publish ./src/Web/Web.csproj -c Release -o "$publishPath"
+        cd "$publishPath"
+        Compress-Archive -Path * -DestinationPath C:\tools\app.zip
+    #Upload app.zip to staging and wait to deploy
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: .net-app
+        path: C:\tools\app.zip
+
+    - name: Deploy zip file to IIS
+      run: |
+        powershell -ExecutionPolicy Bypass -File ./Deployment-script.ps1
