@@ -27,3 +27,34 @@ if (-Not (Test-Path "IIS:\Sites\$SiteName")) {
 else {
     Set-ItemProperty "IIS:\Sites\$SiteName" -Name physicalPath -Value $DeployPath
 }
+
+#Switch to Developer Mode
+$webConfigPath = Join-Path $deployPath "web.config"
+
+if (Test-Path $webConfigPath) {
+    [xml]$webConfig = Get-Content $webConfigPath
+
+    # Get the aspNetCore element
+    $aspNetCore = $webConfig.configuration.'system.webServer'.aspNetCore
+
+    if (-not $aspNetCore.environmentVariables) {
+        $envVars = $webConfig.CreateElement("environmentVariables")
+        $aspNetCore.AppendChild($envVars) | Out-Null
+    }
+
+    # Check if the env var already exists
+    $existing = $aspNetCore.environmentVariables.environmentVariable |
+        Where-Object { $_.name -eq "ASPNETCORE_ENVIRONMENT" }
+
+    if (-not $existing) {
+        $envVar = $webConfig.CreateElement("environmentVariable")
+        $envVar.SetAttribute("name", "ASPNETCORE_ENVIRONMENT")
+        $envVar.SetAttribute("value", "Development")
+        $aspNetCore.environmentVariables.AppendChild($envVar) | Out-Null
+    }
+
+    $webConfig.Save($webConfigPath)
+    Write-Host "✅ Set ASPNETCORE_ENVIRONMENT=Development in web.config"
+} else {
+    Write-Warning "⚠️ web.config not found at $webConfigPath"
+}
