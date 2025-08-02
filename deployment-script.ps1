@@ -41,7 +41,7 @@ if (Test-Path $webConfigPath) {
     $aspNetCore = $webConfig.SelectSingleNode("//ns:aspNetCore", $nsmgr)
 
     if (-not $aspNetCore) {
-        Write-Error "❌ aspNetCore element not found in web.config."
+        Write-Error "aspNetCore element not found in web.config."
         return
     }
 
@@ -59,9 +59,9 @@ if (Test-Path $webConfigPath) {
         $envVar.SetAttribute("name", "ASPNETCORE_ENVIRONMENT")
         $envVar.SetAttribute("value", "Development")
         $envVars.AppendChild($envVar) | Out-Null
-        Write-Host "✅ Set ASPNETCORE_ENVIRONMENT=Development in web.config"
+        Write-Host "Set ASPNETCORE_ENVIRONMENT=Development in web.config"
     } else {
-        Write-Host "ℹ️ ASPNETCORE_ENVIRONMENT already exists in web.config"
+        Write-Host "ASPNETCORE_ENVIRONMENT already exists in web.config"
     }
 
     $webConfig.Save($webConfigPath)
