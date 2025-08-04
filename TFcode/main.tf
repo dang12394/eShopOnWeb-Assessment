@@ -4,7 +4,6 @@ provider "azurerm" {
 
 data "azurerm_resource_group" "rg" {
   name     = "DevOps_group"
-  location = "southeastasia"
 }
 
 resource "azurerm_container_group" "aci" {
