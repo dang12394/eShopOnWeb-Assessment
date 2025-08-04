@@ -5,7 +5,7 @@ param (
 )
 #stop IIS
 
-if (Get-WebAppPoolState -Name "DefaultAppPool").Value -eq "Started" {
+if ((Get-WebAppPoolState -Name "DefaultAppPool").Value -eq "Started") {
     Write-Host "Stopping IIS App Pool: DefaultAppPool"
     Stop-WebAppPool -Name "DefaultAppPool"
     Start-Sleep -Seconds 3  # give it time to shut down gracefully
