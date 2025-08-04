@@ -19,8 +19,12 @@ resource "azurerm_container_group" "aci" {
     memory = "1.5"
 
     ports {
-      port     = 8080
+      port     = 80
       protocol = "TCP"
+    }
+
+    environment_variables = {
+      ASPNETCORE_URLS = "http://+:80"
     }
   }
 
