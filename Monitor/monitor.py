@@ -5,7 +5,7 @@ from datetime import datetime
 import sys
 
 URL = "http://localhost:8080"
-LOG_FILE = os.path.join(os.path.dirname(__file__), "log.txt")
+LOG_FILE = "D:\Eurofins-Assessment\eShopOnWeb-Assessment\Logs\log.txt"
 INTERVAL = 60  
 
 def log(msg):

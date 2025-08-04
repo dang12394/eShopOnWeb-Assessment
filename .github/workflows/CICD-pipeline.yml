@@ -45,4 +45,8 @@ jobs:
 
     - name: Deploy zip file to IIS
       run: |
-        powershell -ExecutionPolicy Bypass -File ./Deployment-script.ps1
+        powershell -ExecutionPolicy Bypass -File ./deployment-script.ps1
+    
+    - name: Install monitoring service
+      run: |
+        powershell -ExecutionPolicy Bypass -File ./monitoring-script.ps1
