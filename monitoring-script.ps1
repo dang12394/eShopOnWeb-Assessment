@@ -14,12 +14,14 @@ if ($check) {
 
 #Install Service
 
-& nssm install $service_name $service_exe
-& nssm set $service_name AppDirectory (Split-Path $service_exe)
-& nssm set $service_name Start SERVICE_AUTO_START
-& nssm set $service_name ObjectName "LocalSystem"
-& nssm set $service_name AppExit Default Restart
-& nssm set $service_name AppRestartDelay 300000
+nssm install $service_name $service_exe
+nssm set $service_name AppDirectory (Split-Path $service_exe)
+nssm set $service_name Start SERVICE_AUTO_START
+nssm set $service_name ObjectName "LocalSystem"
+nssm set $service_name AppExit Default Restart
+nssm set $service_name AppRestartDelay 300000
+
+sc.exe failure $service_name reset= 0 actions= restart/300000/restart/300000/restart/300000
 
 #Start
 
