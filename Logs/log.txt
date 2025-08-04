@@ -606,3 +606,6 @@
 2025-08-04 11:26:04 - HTTP 200 - OK
 2025-08-04 11:27:04 - HTTP 200 - OK
 2025-08-04 11:28:04 - HTTP 200 - OK
+2025-08-04 11:29:04 - HTTP 200 - OK
+2025-08-04 11:30:02 - Service started. Monitoring http://localhost:8080 every 60 seconds.
+2025-08-04 11:30:04 - HTTP 200 - OK

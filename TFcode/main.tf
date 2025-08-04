@@ -25,7 +25,7 @@ resource "azurerm_container_group" "aci" {
     }
   }
 
-  ip_address_type = "public"
+  ip_address_type = "Public"
   dns_name_label  = "eshoponweb${random_integer.rand.result}"
 }
 
