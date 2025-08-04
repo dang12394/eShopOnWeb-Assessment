@@ -2,15 +2,15 @@ provider "azurerm" {
   features{}
 }
 
-resource "azurerm_resource_group" "rg" {
+data "azurerm_resource_group" "rg" {
   name     = "DevOps_group"
   location = "Southeast Asia"
 }
 
 resource "azurerm_container_group" "aci" {
   name                = "eshoponweb"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
   os_type             = "Linux"
 
   container {
