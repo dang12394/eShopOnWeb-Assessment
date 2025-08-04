@@ -15,8 +15,8 @@ resource "azurerm_container_group" "aci" {
   container {
     name   = "eshoponweb"
     image  = "dang12394/eshoponweb:latest"
-    cpu    = "0.5"
-    memory = "1.5"
+    cpu    = "0.1"
+    memory = "0.3"
 
     ports {
       port     = 80
