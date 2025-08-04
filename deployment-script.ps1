@@ -3,6 +3,13 @@ param (
     [string]$DeployPath = "C:\tools\eShop",
     [string]$SiteName = "eShopOnWeb"
 )
+#stop IIS
+
+if (Get-WebAppPoolState -Name "DefaultAppPool").Value -eq "Started" {
+    Write-Host "Stopping IIS App Pool: DefaultAppPool"
+    Stop-WebAppPool -Name "DefaultAppPool"
+    Start-Sleep -Seconds 3  # give it time to shut down gracefully
+}
 
 # Unzip
 if (Test-Path $DeployPath) {
@@ -10,6 +17,10 @@ if (Test-Path $DeployPath) {
 }
 New-Item -ItemType Directory -Path $DeployPath | Out-Null
 Expand-Archive -Path $ZipPath -DestinationPath $DeployPath
+
+#start IIS
+
+Start-WebAppPool -Name "DefaultAppPool"
 
 # Set permissions
 $identity = "IIS AppPool\DefaultAppPool"
