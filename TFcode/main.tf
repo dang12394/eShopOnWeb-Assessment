@@ -19,7 +19,7 @@ resource "azurerm_container_group" "aci" {
     memory = "1.5"
 
     ports {
-      port     = 80
+      port     = 8080
       protocol = "TCP"
     }
   }
